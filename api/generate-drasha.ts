@@ -23,23 +23,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   // Simple analytics logging using Vercel's native logs
   console.log(`[DRASHA_ANALYTICS] Rabbi Chosen: ${rabbi}`);
 
-  let finalTopic = topic;
-  let dateContext = '';
-  if (topic === "Current Week's Parasha") {
-    // Use ISO 8601 format (YYYY-MM-DD) for unambiguous date communication with the AI
-    const today = new Date().toISOString().split('T')[0];
-    finalTopic = `the current weekly Torah portion (Parashat Hashavua)`;
-    dateContext = `For context, the current Gregorian date is ${today}. You must act as a Hebrew calendar expert to determine the correct Parasha for the upcoming Shabbat. The upcoming Shabbat is defined as the first Saturday that occurs on or after this Gregorian date. The calculation must be for the diaspora (outside of Israel).`;
-  }
-
   const prompt = `
     You are an expert scholar in Jewish homiletics, theology, and history, with deep knowledge of the weekly Torah portions (Parashot) and the teachings of influential rabbis throughout history.
     Your task is to write a "drasha" (a sermon or speech) suitable for a Friday night service at a synagogue.
 
     Please generate a drasha based on the following detailed specifications:
 
-    1.  **Primary Topic:** The drasha must be centered on "${finalTopic}". 
-        ${dateContext}
+    1.  **Primary Topic:** The drasha must be centered on "${topic}". 
         If the topic is a Parasha, draw key themes and lessons from it. If it is a holiday (Chag), focus on the significance and messages of the holiday.
 
     2.  **Spoken Duration:** The content should be written to be delivered orally in approximately ${duration} minutes. A typical speaking pace is about 130-150 words per minute, so calibrate the length accordingly.

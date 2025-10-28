@@ -20,6 +20,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const ai = new GoogleGenAI({ apiKey: API_KEY });
   const { duration, topic, rabbi, notes } = options;
   
+  // Simple analytics logging using Vercel's native logs
+  console.log(`[DRASHA_ANALYTICS] Rabbi Chosen: ${rabbi}`);
+
   let finalTopic = topic;
   let dateContext = '';
   if (topic === "Current Week's Parasha") {

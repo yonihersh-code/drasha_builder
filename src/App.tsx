@@ -39,7 +39,6 @@ const App: React.FC = () => {
             let submissionOptions = { ...options };
 
             if (options.topic === "Current Week's Parasha") {
-                // Use Hebcal's reliable JSON API to get the weekly parasha
                 const response = await fetch('https://www.hebcal.com/sedrot?v=1&cfg=json');
                 if (!response.ok) {
                     throw new Error("Could not fetch weekly Parasha from Hebcal API.");
@@ -69,7 +68,6 @@ const App: React.FC = () => {
             <Header />
             <main className="container mx-auto p-4 md:p-6 flex-grow">
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    {/* Form Panel */}
                     <div className="lg:col-span-1 bg-slate-800/50 rounded-lg p-6">
                         <form onSubmit={handleSubmit} className="space-y-6">
                             <h2 className="text-2xl font-semibold mb-4 text-sky-400">Customize Your Drasha</h2>
@@ -112,8 +110,6 @@ const App: React.FC = () => {
                             </div>
                         </form>
                     </div>
-
-                    {/* Display Panel */}
                     <div className="lg:col-span-2">
                        <DrashaDisplay drashaText={generatedDrasha} isLoading={isLoading} error={error} />
                     </div>

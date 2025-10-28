@@ -46,7 +46,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     6.  **Quotation and Citation Requirement:** When quoting any Hebrew text (from the Torah, Tanakh, Talmud, or other rabbinic sources), you MUST follow this format precisely:
         Provide the quote in its original Hebrew characters, immediately followed by the English translation in parentheses, and then immediately followed by the source citation in parentheses.
-        For example: "...as the Torah states, 'בְּרֵאשִׁית בָּרָא אֱלֹהִים אֵת הַשָּׁמַיִם וְאֵת הָאָרֶץ' (In the beginning, God created the heavens and the earth) (Genesis 1:1)."
+        For example: "...as the Torah states, 'בְּרֵאשִׁית בָּרָא אֱלֹהִים אֵת הַשָּמַיִם וְאֵת הָאָרֶץ' (In the beginning, God created the heavens and the earth) (Genesis 1:1)."
         Another example from a later source: "'...[Hebrew text]...' (...[English translation]...) (Talmud Bavli, Berakhot 2a)."
         This rule applies to ALL direct quotations from sources.
     

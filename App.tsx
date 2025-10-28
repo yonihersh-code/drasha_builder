@@ -9,6 +9,7 @@ import Footer from './components/Footer';
 import { generateDrasha } from './services/geminiService';
 import { DrashaOptions } from './types';
 import { RABBI_OPTIONS, TOPIC_OPTIONS } from './constants';
+import { HDate } from 'hebcal';
 
 const App: React.FC = () => {
     const [options, setOptions] = useState<DrashaOptions>({
@@ -36,7 +37,23 @@ const App: React.FC = () => {
         setGeneratedDrasha('');
         
         try {
-            const result = await generateDrasha(options);
+            let submissionOptions = { ...options };
+
+            if (options.topic === "Current Week's Parasha") {
+                const today = new HDate();
+                const saturday = today.onOrAfter(6); // 6 is Shabbat
+                const events = saturday.getEvents();
+                const parshaEvent = events.find(ev => ev.getCategory() === 'parsha');
+                
+                if (parshaEvent) {
+                    submissionOptions.topic = parshaEvent.render('en');
+                } else {
+                    // Fallback in the rare case a Parsha isn't found for a given Shabbat
+                    throw new Error("Could not determine the weekly Parasha. Please select one manually.");
+                }
+            }
+
+            const result = await generateDrasha(submissionOptions);
             setGeneratedDrasha(result);
         } catch (err: any) {
             setError(err.message || 'An unexpected error occurred.');

@@ -9,7 +9,6 @@ import Footer from './components/Footer';
 import { generateDrasha } from './services/geminiService';
 import { DrashaOptions } from './types';
 import { RABBI_OPTIONS, TOPIC_OPTIONS } from './constants';
-import * as Hebcal from 'hebcal';
 
 const App: React.FC = () => {
     const [options, setOptions] = useState<DrashaOptions>({
@@ -40,16 +39,18 @@ const App: React.FC = () => {
             let submissionOptions = { ...options };
 
             if (options.topic === "Current Week's Parasha") {
-                const today = new Hebcal.HDate();
-                const saturday = today.onOrAfter(6); // 6 is Shabbat
-                const events = saturday.getEvents();
-                const parshaEvent = events.find(ev => ev.getCategory() === 'parsha');
-                
-                if (parshaEvent) {
-                    submissionOptions.topic = parshaEvent.render('en');
+                // Use Hebcal's reliable JSON API to get the weekly parasha
+                const response = await fetch('https://www.hebcal.com/sedrot?v=1&cfg=json');
+                if (!response.ok) {
+                    throw new Error("Could not fetch weekly Parasha from Hebcal API.");
+                }
+                const data = await response.json();
+                const parshaItem = data.items.find((item: any) => item.category === 'parsha');
+
+                if (parshaItem) {
+                    submissionOptions.topic = parshaItem.title;
                 } else {
-                    // Fallback in the rare case a Parsha isn't found for a given Shabbat
-                    throw new Error("Could not determine the weekly Parasha. Please select one manually.");
+                    throw new Error("Could not determine the weekly Parasha from API data. Please select one manually.");
                 }
             }
 

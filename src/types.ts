@@ -1,4 +1,3 @@
-
 export interface DrashaOptions {
   duration: number;
   topic: string;

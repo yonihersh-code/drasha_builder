@@ -12,7 +12,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "@google/genai": "^1.27.0",
-    "hebcal": "^2.4.0"
+    "hebcal": "^2.3.2"
   },
   "devDependencies": {
     "@types/node": "^20.11.20",

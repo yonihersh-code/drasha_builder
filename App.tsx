@@ -9,7 +9,7 @@ import Footer from './components/Footer';
 import { generateDrasha } from './services/geminiService';
 import { DrashaOptions } from './types';
 import { RABBI_OPTIONS, TOPIC_OPTIONS } from './constants';
-import { HDate } from 'hebcal';
+import * as Hebcal from 'hebcal';
 
 const App: React.FC = () => {
     const [options, setOptions] = useState<DrashaOptions>({
@@ -40,7 +40,7 @@ const App: React.FC = () => {
             let submissionOptions = { ...options };
 
             if (options.topic === "Current Week's Parasha") {
-                const today = new HDate();
+                const today = new Hebcal.HDate();
                 const saturday = today.onOrAfter(6); // 6 is Shabbat
                 const events = saturday.getEvents();
                 const parshaEvent = events.find(ev => ev.getCategory() === 'parsha');

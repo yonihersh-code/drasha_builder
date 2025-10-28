@@ -26,7 +26,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // Use ISO 8601 format (YYYY-MM-DD) for unambiguous date communication with the AI
     const today = new Date().toISOString().split('T')[0];
     finalTopic = `the current weekly Torah portion (Parashat Hashavua)`;
-    dateContext = `For context, the current Gregorian date is ${today}. You must act as a Hebrew calendar expert to determine the correct Parasha for the upcoming Shabbat based on this date, considering the location is in the diaspora (outside of Israel).`;
+    dateContext = `For context, the current Gregorian date is ${today}. You must act as a Hebrew calendar expert to determine the correct Parasha for the upcoming Shabbat. The upcoming Shabbat is defined as the first Saturday that occurs on or after this Gregorian date. The calculation must be for the diaspora (outside of Israel).`;
   }
 
   const prompt = `

@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@google/genai": "^1.27.0",
-    "hebcal": "2.3.3",
+    "hebcal": "2.3.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },

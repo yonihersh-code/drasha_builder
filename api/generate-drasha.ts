@@ -1,0 +1,68 @@
+import { GoogleGenAI } from "@google/genai";
+import type { VercelRequest, VercelResponse } from '@vercel/node';
+
+export default async function handler(req: VercelRequest, res: VercelResponse) {
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method Not Allowed' });
+  }
+
+  const { options } = req.body;
+
+  if (!options) {
+    return res.status(400).json({ error: 'Missing drasha options in request body' });
+  }
+
+  const API_KEY = process.env.API_KEY;
+  if (!API_KEY) {
+    return res.status(500).json({ error: 'API_KEY is not configured on the server.' });
+  }
+
+  const ai = new GoogleGenAI({ apiKey: API_KEY });
+  const { duration, topic, rabbi, notes } = options;
+  
+  let finalTopic = topic;
+  if (topic === "Current Week's Parasha") {
+    const today = new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+    finalTopic = `the Parasha for the week of ${today}`;
+  }
+
+  const prompt = `
+    You are an expert scholar in Jewish homiletics, theology, and history, with deep knowledge of the weekly Torah portions (Parashot) and the teachings of influential rabbis throughout history.
+    Your task is to write a "drasha" (a sermon or speech) suitable for a Friday night service at a synagogue.
+
+    Please generate a drasha based on the following detailed specifications:
+
+    1.  **Primary Topic:** The drasha must be centered on "${finalTopic}". If this is a Parasha, draw key themes and lessons from it. If it is a holiday (Chag), focus on the significance and messages of the holiday. If the topic includes a date, you must first determine the correct Parasha for that date and then focus the drasha on it.
+
+    2.  **Spoken Duration:** The content should be written to be delivered orally in approximately ${duration} minutes. A typical speaking pace is about 130-150 words per minute, so calibrate the length accordingly.
+
+    3.  **Rabbinic Style & Influence:** The drasha's style, tone, philosophical insights, and method of interpretation must be heavily inspired by the teachings of **Rabbi ${rabbi}**. Emulate their characteristic approach to textual analysis, storytelling, and moral reasoning.
+
+    4.  **User's Additional Notes:** Please thoughtfully integrate the following points or themes into the drasha: "${notes || 'No additional notes provided.'}"
+
+    5.  **Structure and Tone:**
+        *   **Introduction:** Start with a captivating opening that grabs the audience's attention and introduces the topic.
+        *   **Body:** Develop the main ideas logically, weaving together scriptural verses, rabbinic commentary (midrash), and stories that align with the chosen rabbinic style.
+        *   **Conclusion:** Conclude with a powerful, inspiring message that connects the ancient text to contemporary life, leaving the congregation with a meaningful thought for Shabbat.
+        *   **Tone:** The tone should be warm, engaging, and respectful, suitable for a diverse congregation on the eve of Shabbat.
+
+    6.  **Quotation and Citation Requirement:** When quoting any Hebrew text (from the Torah, Tanakh, Talmud, or other rabbinic sources), you MUST follow this format precisely:
+        Provide the quote in its original Hebrew characters, immediately followed by the English translation in parentheses, and then immediately followed by the source citation in parentheses.
+        For example: "...as the Torah states, 'בְּרֵאשִׁית בָּרָא אֱלֹהִים אֵת הַשָּׁמַיִם וְאֵת הָאָרֶץ' (In the beginning, God created the heavens and the earth) (Genesis 1:1)."
+        Another example from a later source: "'...[Hebrew text]...' (...[English translation]...) (Talmud Bavli, Berakhot 2a)."
+        This rule applies to ALL direct quotations from sources.
+
+    Output only the full text of the drasha, ready to be read.
+  `;
+
+  try {
+    const response = await ai.models.generateContent({
+        model: 'gemini-2.5-pro',
+        contents: prompt,
+    });
+    return res.status(200).json({ drasha: response.text });
+  } catch (error) {
+    console.error("Error generating drasha in serverless function:", error);
+    return res.status(500).json({ error: "The AI failed to generate a drasha. This could be a temporary issue. Please try again." });
+  }
+}
